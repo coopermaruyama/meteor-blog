@@ -1,6 +1,6 @@
 Package.describe({
   summary: "A package that provides a blog at /blog",
-  version: "0.6.0",
+  version: "0.6.1",
   name: "cooperm:blog",
   git: "https://github.com/coopermaruyama/meteor-blog.git"
 });
@@ -49,7 +49,7 @@ Package.onUse(function(api) {
     'client/views/admin/admin.coffee',
     'client/views/admin/edit.html',
     'client/views/admin/editor.coffee',
-    'client/views/admin/editor.less',
+    // 'client/views/admin/editor.less',
     'client/views/admin/edit.coffee',
     'client/views/blog/blog.less',
     'client/views/blog/blog.html',

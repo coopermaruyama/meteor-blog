@@ -50,11 +50,13 @@ save = (tpl, cb) ->
     return cb(null, new Error 'Blog body is required')
 
   slug = $('[name=slug]', $form).val()
+  description = $('[name=description]', $form).val()
 
   attrs =
     title: $('[name=title]', $form).val()
     tags: $('[name=tags]', $form).val()
     slug: slug
+    description: description
     body: body
     updatedAt: new Date()
 
@@ -158,7 +160,7 @@ Template.blogAdminEdit.events
         path = Router.path 'blogAdminEdit', id: id
         IronLocation.set path, { replaceState: true, skipReactive: true }
 
-      # Notifications.success '', 'Saved'
+      Notifications.success '', 'Saved'
   , 8000
 
   'blur [name=title]': (e, tpl) ->
