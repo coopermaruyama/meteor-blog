@@ -158,7 +158,7 @@ Template.blogAdminEdit.events
         path = Router.path 'blogAdminEdit', id: id
         IronLocation.set path, { replaceState: true, skipReactive: true }
 
-      Notifications.success '', 'Saved'
+      # Notifications.success '', 'Saved'
   , 8000
 
   'blur [name=title]': (e, tpl) ->
