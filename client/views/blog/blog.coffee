@@ -6,8 +6,10 @@ Template.blogIndex.rendered = ->
 
 Template.blogShowBody.rendered = ->
 
-  Meteor.call 'isBlogAuthorized', @_id, (err, result) ->
-    if result then Session.set 'canEditPost', result else console.log err
+
+  Meteor.call 'isBlogAuthorized', @id, (err, authorized) =>
+      if authorized
+        Session.set 'canEditPost', authorized
 
   #
   # SIDECOMMENTS.JS

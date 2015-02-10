@@ -51,7 +51,7 @@ class @Post extends Minimongoid
       ret = ''
       while not ret and matches[i]
         # Strip tags and clean up whitespaces
-        ret += matches[i++].replace(/(<([^>]+)>)/ig, ' ').replace('&nbsp;', ' ').trim()
+        ret += matches[i++].replace(/(<([^>]+)>)/ig, ' ').replace(/(\s\.)/, '.').replace('&nbsp;', ' ').trim()
       ret
 
   authorName: ->
@@ -114,8 +114,8 @@ if Meteor.isServer
       if Blog.settings.authorRole
  
         # Get the post
-        check arguments[0], Match.OneOf(Object, Number, String, null)
-        
+        check arguments[0], Match.OneOf(Object, Number, String, null, undefined)
+
         if _.isObject arguments[0]
           post = arguments[0]
         else if _.isNumber(arguments[0]) or _.isString(arguments[0])

@@ -100,22 +100,22 @@ Template.blogAdminEdit.rendered = ->
         @$('.editable').html post.body
         @$('.html-editor').html post.body
 
-  # Tags
-  $tags = @$('[data-role=tagsinput]')
-  $tags.tagsinput confirmKeys: [13, 44, 9]
-  $tags.tagsinput('input').typeahead(
-    highlight: true,
-    hint: false
-  ,
-    name: 'tags'
-    displayKey: 'val'
-    source: substringMatcher Tag.first().tags
-  ).bind 'typeahead:selected', (obj, datum) ->
-    $tags.tagsinput 'add', datum.val
-    $tags.tagsinput('input').typeahead 'val', ''
+      # Tags
+      $tags = @$('[data-role=tagsinput]')
+      $tags.tagsinput confirmKeys: [13, 44, 9]
+      $tags.tagsinput('input').typeahead(
+        highlight: true,
+        hint: false
+      ,
+        name: 'tags'
+        displayKey: 'val'
+        source: substringMatcher Tag.first().tags
+      ).bind 'typeahead:selected', (obj, datum) ->
+        $tags.tagsinput 'add', datum.val
+        $tags.tagsinput('input').typeahead 'val', ''
 
-  # Medium editor
-  BlogEditor.make @
+      # Medium editor
+      BlogEditor.make @
 
 Template.blogAdminEdit.helpers
   post: ->
@@ -149,7 +149,7 @@ Template.blogAdminEdit.events
     $html.height($editable.height())
 
   # Autosave
-  'input .editable, keyup .editable, keyup .html-editor': _.debounce (e, tpl) ->
+  'input .editable, keydown .editable, keydown .html-editor': _.debounce (e, tpl) ->
     save tpl, (id, err) ->
       if err
         return Notifications.error '', err.message
@@ -158,7 +158,7 @@ Template.blogAdminEdit.events
         # If new blog post, subscribe to the new post and update URL
         Session.set 'postId', id
         path = Router.path 'blogAdminEdit', id: id
-        IronLocation.set path, { replaceState: true, skipReactive: true }
+        Iron.Location.go path, { replaceState: true, skipReactive: true }
 
       Notifications.success '', 'Saved'
   , 8000

@@ -1,7 +1,6 @@
 class @BlogEditor extends MediumEditor
 
   # FACTORY
- 
   @make: (tpl) ->
     # Set up the medium editor with image upload
     editor = new BlogEditor '.editable',
@@ -18,26 +17,43 @@ class @BlogEditor extends MediumEditor
       addons:
         images:
           uploadFile: ($placeholder, file, that) ->
-            id = Files.insert
-              _id: Random.id()
-              contentType: 'image/jpeg'
+            # Use CollectionFS + Amazon S3
+            if Meteor.settings?.public?.blog?.useS3
+              FS.Utility.eachFile event, (file) ->
+                S3Files.insert file, (err, fileObj) ->
+                  Tracker.autorun (c) ->
+                    theFile = S3Files.find({_id: fileObj._id}).fetch()[0]
+                    if theFile.isUploaded() and theFile.url?()
+                      that.uploadCompleted { responseText: theFile.url() }, $placeholder
+                      c.stop()
+                      return
+                    else
+                      $progress = $('.progress:first', this.$el)
+                      complete = theFile.uploadProgress() ? 0
+                      $progress.attr 'value', complete
+                      $progress.html complete
+            # Use Local Filestore
+            else
+              id = FilesLocal.insert
+                _id: Random.id()
+                contentType: 'image/jpeg'
 
-            $.ajax
-              type: "post"
-              url: "/fs/#{id}"
-              xhr: ->
-                xhr = new XMLHttpRequest()
-                xhr.upload.onprogress = that.updateProgressBar
-                xhr
+              $.ajax
+                type: "post"
+                url: "/fs/#{id}"
+                xhr: ->
+                  xhr = new XMLHttpRequest()
+                  xhr.upload.onprogress = that.updateProgressBar
+                  xhr
 
-              cache: false
-              contentType: false
-              complete: (jqxhr) ->
-                that.uploadCompleted { responseText: "/fs/#{id}" }, $placeholder
-                return
+                cache: false
+                contentType: false
+                complete: (jqxhr) ->
+                  that.uploadCompleted { responseText: "/fs/#{id}" }, $placeholder
+                  return
 
-              processData: false
-              data: that.options.formatData(file)
+                processData: false
+                data: that.options.formatData(file)
 
         #embeds: {}
 
@@ -49,9 +65,8 @@ class @BlogEditor extends MediumEditor
     @init.apply @, arguments
 
     # Don't let the medium insert plugin submit the form
-    $(@elements[0]).find('.mediumInsert-action').on 'click', (e) ->
-      e.preventDefault()
-      e.stopPropagation()
+    $('form').on 'click', (event) ->
+      if $(event.target).is '.mediumInsert' then event.preventDefault();
 
   # Return medium editor's contents
   contents: ->

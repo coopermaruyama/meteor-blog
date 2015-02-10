@@ -1,8 +1,8 @@
 Package.describe({
   summary: "A package that provides a blog at /blog",
-  version: "0.6.1",
-  name: "cooperm:blog",
-  git: "https://github.com/coopermaruyama/meteor-blog.git"
+  version: "0.6.3",
+  name: "ryw:blog",
+  git: "https://github.com/Differential/meteor-blog.git"
 });
 
 Package.onUse(function(api) {
@@ -64,6 +64,8 @@ Package.onUse(function(api) {
   api.addFiles([
     'public/default-user.png',
     'client/stylesheets/images/remove.png',
+    'client/stylesheets/images/link.png',
+    'client/stylesheets/images/unlink.png',
     'client/stylesheets/images/resize-bigger.png',
     'client/stylesheets/images/resize-smaller.png'
   ], 'client', { isAsset: true });
@@ -94,7 +96,10 @@ Package.onUse(function(api) {
     'vsivsi:file-collection@0.3.3',
     'alanning:roles@1.2.13',
     'meteorhacks:fast-render@2.0.2',
-    'meteorhacks:subs-manager@1.2.0'
+    'meteorhacks:subs-manager@1.2.0',
+    'cfs:standard-packages@0.5.3',
+    'cfs:filesystem@0.1.1',
+    'cfs:s3@0.1.1'
   ], both);
 
   // FILES FOR SERVER AND CLIENT
@@ -114,6 +119,8 @@ Package.onTest(function (api) {
   api.use('tinytest', ['client', 'server']);
   api.use('test-helpers', ['client', 'server']);
   api.use('coffeescript', ['client', 'server']);
+
+  Npm.depends({ rss: '0.0.4' });
 
   api.addFiles('test/server/rss.coffee', 'server');
 });
