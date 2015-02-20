@@ -80,7 +80,7 @@ Router.route '/blog/:slug',
           userFunc.call(@)
       else
         Template[tpl].rendered = pkgFunc
-
+    Session.set 'postHasFeaturedImage', Post.first({slug: @params.slug}).featuredImage?.length > 0
     @next()
   action: ->
     @render() if @ready()
